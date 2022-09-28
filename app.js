@@ -26,6 +26,7 @@ app.get("/", (req, res) => {
 });
 
 require("./app/routes/activity_groups.routes")(app);
+require("./app/routes/todo_items.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3030;

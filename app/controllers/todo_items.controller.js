@@ -2,7 +2,6 @@ const e = require("express");
 const db = require("../models");
 const Activity_groups = db.activity_groups;
 const Todo_items = db.todo_items;
-const Op = db.Sequelize.Op;
 
 // Create and Save a new Todo Items
 exports.create = (req, res) => {
@@ -15,15 +14,24 @@ exports.create = (req, res) => {
         });
         return;
     }
+
+    if (!req.body.activity_group_id) {
+      res.status(400).send({
+          status: "Bad Request",
+          message: "activity_group_id cannot be null",
+          data: {}
+      });
+      return;
+  }
     
     // Create a Todo Items
-    const activity_groups = {
+    const todo_items = {
         title: req.body.title,
-        email: req.body.email
+        activity_group_id: req.body.activity_group_id
     };
     
       // Save Todo Items in the database
-      Activity_groups.create(activity_groups)
+      Todo_items.create(todo_items)
         .then(data => {
             res.status(201).send({
                 status: "Success",
@@ -39,9 +47,17 @@ exports.create = (req, res) => {
         });
 };
 
-// Retrieve all Todo Itemss from the database.
+// Retrieve all Todo Items from the database.
 exports.findAll = (req, res) => {
-    Activity_groups.findAll()
+  const id = req.query.activity_group_id;
+
+  let condition = { };
+
+  if(id) {
+    condition = { where: { activity_group_id: id } };
+  } 
+
+  Todo_items.findAll(condition)
     .then(data => {
       res.send({
         status: "Success",
@@ -61,7 +77,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
     const id = req.params.id;
 
-    Activity_groups.findByPk(id)
+    Todo_items.findByPk(id)
       .then(data => {
         if (data) {
           res.send({
@@ -72,7 +88,7 @@ exports.findOne = (req, res) => {
         } else {
           res.status(404).send({
             status: "Not Found",
-            message: `Activity with ID ${id} Not Found`,
+            message: `Todo with ID ${id} Not Found`,
             "data": {}
           });
         }
@@ -88,20 +104,11 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
 
-    if (!req.body.title) {
-        res.status(400).send({
-            status: "Bad Request",
-            message: "title cannot be null!",
-            data: {}
-        });
-        return;
-    }
-
-    Activity_groups.update(req.body, {
+    Todo_items.update(req.body, {
       where: { id: id }
     })
     .then(async result => {
-        const data = await Activity_groups.findByPk(id);
+        const data = await Todo_items.findByPk(id);
         if(result == 1) {
           res.send({
               status: "Success",
@@ -113,16 +120,18 @@ exports.update = (req, res) => {
           
           res.status(404).send({
             status: "Not Found",
-            message: `Activity with ID ${id} Not Found`,
+            message: `Todo with ID ${id} Not Found`,
             "data": {}
           });
 
         }else {
+
           res.status(500).send({
             status: "Bad Request",
             message: "error when update Todo Items" + err,
             data
           });
+          
         }
     })
     .catch(err => {
@@ -138,7 +147,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
     const id = req.params.id;
 
-    Activity_groups.destroy({
+    Todo_items.destroy({
       where: { id: id }
     })
       .then(num => {
@@ -151,7 +160,7 @@ exports.delete = (req, res) => {
         } else {
           res.status(404).send({
             status: "Not Found",
-            message: `Activity with ID ${id} Not Found`,
+            message: `Todo with ID ${id} Not Found`,
             "data": {}
           });
         }

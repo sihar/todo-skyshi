@@ -1,7 +1,6 @@
 const e = require("express");
 const db = require("../models");
 const Activity_groups = db.activity_groups;
-const Op = db.Sequelize.Op;
 
 // Create and Save a new Activity Groups
 exports.create = (req, res) => {

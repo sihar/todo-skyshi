@@ -3,19 +3,19 @@ module.exports = app => {
   
     var router = require("express").Router();
   
-    // Create a new Activity Groups
+    // Create a new Todo Items
     router.post("/", todo_items.create);
   
-    // Retrieve all Activity Groups
+    // Retrieve all Todo Items
     router.get("/", todo_items.findAll);
   
-    // Retrieve a single Activity Groups with id
+    // Retrieve a single Todo Items with id
     router.get("/:id", todo_items.findOne);
   
-    // Update a Activity Groups with id
+    // Update a Todo Items with id
     router.patch("/:id", todo_items.update);
   
-    // Delete a Activity Groups with id
+    // Delete a Todo Items with id
     router.delete("/:id", todo_items.delete);
   
     app.use('/todo-items', router);

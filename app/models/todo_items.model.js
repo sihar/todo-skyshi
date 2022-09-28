@@ -6,6 +6,14 @@ module.exports = (sequelize, Sequelize) => {
       title: {
         type: Sequelize.STRING
       },
+      is_active: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: true,
+      },
+      priority: {
+        type: Sequelize.STRING,
+        defaultValue: "very-high",
+      },
     },
     {
         createdAt: 'created_at',
