@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    const Todo_items = sequelize.define("todo_items", {
+    const Todo_items = sequelize.define("todos", {
       activity_group_id: {
         type: Sequelize.INTEGER
       },
