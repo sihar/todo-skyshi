@@ -6,6 +6,8 @@ WORKDIR /home/node/app
 
 COPY package*.json ./
 
+RUN npm install pm2 -g
+
 USER node
 
 RUN npm install
@@ -14,4 +16,6 @@ COPY --chown=node:node . .
 
 EXPOSE 3030
 
-CMD [ "node", "app.js" ]
+ENV NODE_ENV=production
+
+CMD [ "pm2-runtime", "start", "app.js" ]
