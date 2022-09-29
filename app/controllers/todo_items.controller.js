@@ -4,10 +4,10 @@ const Activity_groups = db.activity_groups;
 const Todo_items = db.todo_items;
 
 // Create and Save a new Todo Items
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
     // Validate request
     if (!req.body.title) {
-        res.status(400).send({
+        await res.status(400).send({
             status: "Bad Request",
             message: "title cannot be null",
             data: {}
@@ -16,7 +16,7 @@ exports.create = (req, res) => {
     }
 
     if (!req.body.activity_group_id) {
-      res.status(400).send({
+      await res.status(400).send({
           status: "Bad Request",
           message: "activity_group_id cannot be null",
           data: {}
@@ -31,16 +31,16 @@ exports.create = (req, res) => {
     };
     
       // Save Todo Items in the database
-      Todo_items.create(todo_items)
-        .then(data => {
-            res.status(201).send({
+      await Todo_items.create(todo_items)
+        .then(async data => {
+            await res.status(201).send({
                 status: "Success",
                 message: "Success",
                 data
             });
         })
-        .catch(err => {
-          res.status(500).send({
+        .catch(async err => {
+          await res.status(500).send({
             message:
               err.message || "Some error occurred while creating the Todo Items."
           });
@@ -48,7 +48,7 @@ exports.create = (req, res) => {
 };
 
 // Retrieve all Todo Items from the database.
-exports.findAll = (req, res) => {
+exports.findAll = async (req, res) => {
   const id = req.query.activity_group_id;
 
   let condition = { };
@@ -57,16 +57,16 @@ exports.findAll = (req, res) => {
     condition = { where: { activity_group_id: id } };
   } 
 
-  Todo_items.findAll(condition)
-    .then(data => {
-      res.send({
+  await Todo_items.findAll(condition)
+    .then(async data => {
+      await res.send({
         status: "Success",
         message: "Success",
         data
     });
     })
-    .catch(err => {
-      res.status(500).send({
+    .catch(async err => {
+      await res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving Todo Items."
       });
@@ -74,43 +74,43 @@ exports.findAll = (req, res) => {
 };
 
 // Find a single Todo Items with an id
-exports.findOne = (req, res) => {
+exports.findOne = async (req, res) => {
     const id = req.params.id;
 
-    Todo_items.findByPk(id)
-      .then(data => {
+    await Todo_items.findByPk(id)
+      .then(async data => {
         if (data) {
-          res.send({
+          await res.send({
             status: "Success",
             message: "Success",
             data
           });
         } else {
-          res.status(404).send({
+          await res.status(404).send({
             status: "Not Found",
             message: `Todo with ID ${id} Not Found`,
             "data": {}
           });
         }
       })
-      .catch(err => {
-        res.status(500).send({
+      .catch(async err => {
+        await res.status(500).send({
           message: "Error retrieving Todo Items with id=" + id
         });
       });  
 };
 
 // Update a Todo Items by the id in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     const id = req.params.id;
 
-    Todo_items.update(req.body, {
+    await Todo_items.update(req.body, {
       where: { id: id }
     })
     .then(async result => {
         const data = await Todo_items.findByPk(id);
         if(result == 1) {
-          res.send({
+          await res.send({
               status: "Success",
               message: "Success",
               data
@@ -118,7 +118,7 @@ exports.update = (req, res) => {
         
         }else if(!data) {
           
-          res.status(404).send({
+          await res.status(404).send({
             status: "Not Found",
             message: `Todo with ID ${id} Not Found`,
             "data": {}
@@ -126,7 +126,7 @@ exports.update = (req, res) => {
 
         }else {
 
-          res.status(500).send({
+          await res.status(500).send({
             status: "Bad Request",
             message: "error when update Todo Items" + err,
             data
@@ -134,8 +134,8 @@ exports.update = (req, res) => {
           
         }
     })
-    .catch(err => {
-        res.status(500).send({
+    .catch(async err => {
+        await res.status(500).send({
             status: "Bad Request",
             message: "error when update Todo Items" + err,
             data: {}
@@ -144,29 +144,29 @@ exports.update = (req, res) => {
 };
 
 // Delete a Todo Items with the specified id in the request
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
     const id = req.params.id;
 
-    Todo_items.destroy({
+    await Todo_items.destroy({
       where: { id: id }
     })
-      .then(num => {
+      .then(async num => {
         if (num == 1) {
-            res.send({
+            await res.send({
                 status: "Success",
                 message: "Success",
                 data: {}
             });
         } else {
-          res.status(404).send({
+          await res.status(404).send({
             status: "Not Found",
             message: `Todo with ID ${id} Not Found`,
             "data": {}
           });
         }
       })
-      .catch(err => {
-        res.status(500).send({
+      .catch(async err => {
+        await res.status(500).send({
           message: "Could not delete Todo Items with id=" + id
         });
       });  

@@ -3,10 +3,10 @@ const db = require("../models");
 const Activity_groups = db.activity_groups;
 
 // Create and Save a new Activity Groups
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
     // Validate request
     if (!req.body.title) {
-        res.status(400).send({
+        await res.status(400).send({
             status: "Bad Request",
             message: "title cannot be null",
             data: {}
@@ -21,16 +21,16 @@ exports.create = (req, res) => {
     };
     
       // Save Activity Groups in the database
-      Activity_groups.create(activity_groups)
-        .then(data => {
-            res.status(201).send({
+      await Activity_groups.create(activity_groups)
+        .then(async data => {
+            await res.status(201).send({
                 status: "Success",
                 message: "Success",
                 data
             });
         })
-        .catch(err => {
-          res.status(500).send({
+        .catch(async err => {
+          await res.status(500).send({
             message:
               err.message || "Some error occurred while creating the Activity Groups."
           });
@@ -38,17 +38,17 @@ exports.create = (req, res) => {
 };
 
 // Retrieve all Activity Groupss from the database.
-exports.findAll = (req, res) => {
-    Activity_groups.findAll()
-    .then(data => {
-      res.send({
+exports.findAll = async (req, res) => {
+    await Activity_groups.findAll()
+    .then(async data => {
+      await res.send({
         status: "Success",
         message: "Success",
         data
     });
     })
-    .catch(err => {
-      res.status(500).send({
+    .catch(async err => {
+      await res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving activity groups."
       });
@@ -56,38 +56,38 @@ exports.findAll = (req, res) => {
 };
 
 // Find a single Activity Groups with an id
-exports.findOne = (req, res) => {
+exports.findOne = async (req, res) => {
     const id = req.params.id;
 
-    Activity_groups.findByPk(id)
-      .then(data => {
+    await Activity_groups.findByPk(id)
+      .then(async data => {
         if (data) {
-          res.send({
+          await res.send({
             status: "Success",
             message: "Success",
             data
           });
         } else {
-          res.status(404).send({
+          await res.status(404).send({
             status: "Not Found",
             message: `Activity with ID ${id} Not Found`,
             "data": {}
           });
         }
       })
-      .catch(err => {
-        res.status(500).send({
+      .catch(async err => {
+        await res.status(500).send({
           message: "Error retrieving Activity Groups with id=" + id
         });
       });  
 };
 
 // Update a Activity Groups by the id in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     const id = req.params.id;
 
     if (!req.body.title) {
-        res.status(400).send({
+        await res.status(400).send({
             status: "Bad Request",
             message: "title cannot be null!",
             data: {}
@@ -95,13 +95,13 @@ exports.update = (req, res) => {
         return;
     }
 
-    Activity_groups.update(req.body, {
+    await Activity_groups.update(req.body, {
       where: { id: id }
     })
     .then(async result => {
         const data = await Activity_groups.findByPk(id);
         if(result == 1) {
-          res.send({
+          await res.send({
               status: "Success",
               message: "Success",
               data
@@ -109,22 +109,22 @@ exports.update = (req, res) => {
         
         }else if(!data) {
           
-          res.status(404).send({
+          await res.status(404).send({
             status: "Not Found",
             message: `Activity with ID ${id} Not Found`,
             "data": {}
           });
 
         }else {
-          res.status(500).send({
+          await res.status(500).send({
             status: "Bad Request",
             message: "error when update activity groups" + err,
             data
           });
         }
     })
-    .catch(err => {
-        res.status(500).send({
+    .catch(async err => {
+        await res.status(500).send({
             status: "Bad Request",
             message: "error when update activity groups" + err,
             data: {}
@@ -133,29 +133,29 @@ exports.update = (req, res) => {
 };
 
 // Delete a Activity Groups with the specified id in the request
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
     const id = req.params.id;
 
-    Activity_groups.destroy({
+    await Activity_groups.destroy({
       where: { id: id }
     })
-      .then(num => {
+      .then(async num => {
         if (num == 1) {
-            res.send({
+            await res.send({
                 status: "Success",
                 message: "Success",
                 data: {}
             });
         } else {
-          res.status(404).send({
+          await res.status(404).send({
             status: "Not Found",
             message: `Activity with ID ${id} Not Found`,
             "data": {}
           });
         }
       })
-      .catch(err => {
-        res.status(500).send({
+      .catch(async err => {
+        await res.status(500).send({
           message: "Could not delete Activity Groups with id=" + id
         });
       });  
