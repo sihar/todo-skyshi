@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    const Activity_groups = sequelize.define("activites", {
+    const Activity_groups = sequelize.define("activities", {
       title: {
         type: Sequelize.STRING
       },
