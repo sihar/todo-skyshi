@@ -14,27 +14,15 @@ exports.create = async (req, res) => {
         return;
     }
     
-    // Create a Activity Groups
-    const activity_groups = {
-        title: req.body.title,
-        email: req.body.email
-    };
-    
       // Save Activity Groups in the database
-      await Activity_groups.create(activity_groups)
-        .then(async data => {
-            await res.status(201).send({
-                status: "Success",
-                message: "Success",
-                data
-            });
-        })
-        .catch(async err => {
-          await res.status(500).send({
-            message:
-              err.message || "Some error occurred while creating the Activity Groups."
-          });
-        });
+    let data = await Activity_groups.create(req.body);
+    
+    await res.status(201).send({
+      status: "Success",
+      message: "Success",
+      data
+    });
+
 };
 
 // Retrieve all Activity Groupss from the database.

@@ -20,6 +20,17 @@ module.exports = (sequelize, Sequelize) => {
         updatedAt: 'updated_at',
         deletedAt: 'deleted_at',
         paranoid: true,
+    },
+    {
+      indexes: [
+        {
+            name: 'idx_todos_1',
+            using: 'BTREE',
+            fields: [
+              'activity_group_id',
+            ]
+        }
+      ]
     }
     );
   
