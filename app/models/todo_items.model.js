@@ -21,17 +21,6 @@ module.exports = (sequelize, Sequelize) => {
         deletedAt: 'deleted_at',
         paranoid: true,
     },
-    {
-      indexes: [
-        {
-            name: 'idx_todos_1',
-            using: 'BTREE',
-            fields: [
-              'activity_group_id',
-            ]
-        }
-      ]
-    }
     );
   
     return Todo_items;
