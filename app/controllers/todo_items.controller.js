@@ -1,5 +1,6 @@
 const e = require("express");
 const db = require("../models");
+const myCache = require("../../cache");
 const Activity_groups = db.activity_groups;
 const Todo_items = db.todo_items;
 
@@ -52,25 +53,28 @@ exports.findAll = async (req, res) => {
   const id = req.query.activity_group_id;
 
   let condition = { };
+  let todoAllKey = 'todoAll';
 
   if(id) {
     condition = { where: { activity_group_id: id } };
+    todoAllKey = 'todoAll' + id;
   } 
 
-  await Todo_items.findAll(condition)
-    .then(async data => {
-      await res.send({
-        status: "Success",
-        message: "Success",
-        data
-    });
-    })
-    .catch(async err => {
-      await res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving Todo Items."
-      });
-    });
+  value = myCache.get( todoAllKey );
+
+  if ( value == undefined ){
+    data = await Todo_items.findAll(condition);
+    result = myCache.set( todoAllKey, data, 10000 );
+  } else {
+    data = value;
+  }
+
+  await res.send({
+    status: "Success",
+    message: "Success",
+    data
+  });
+
 };
 
 // Find a single Todo Items with an id
