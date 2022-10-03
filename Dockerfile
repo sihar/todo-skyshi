@@ -8,8 +8,6 @@ WORKDIR /home/node/app
 
 COPY package*.json ./
 
-#RUN npm install pm2 -g
-
 USER node
 
 RUN npm ci --only=production
@@ -18,4 +16,4 @@ COPY --chown=node:node . .
 
 EXPOSE 3030
 
-CMD [ "node", "--prof", "app.js" ]
+CMD [ "node", "app.js" ]
